@@ -144,6 +144,6 @@ if question:
     prompt.append({"role": "assistant", "content": result})
 
     st.session_state["current_selection"] = len(prompts)
-    input_placeholder.empty()
+    # input_placeholder.empty()
     # Store the updated prompt in the session state
     st.session_state["prompt"] = prompt
