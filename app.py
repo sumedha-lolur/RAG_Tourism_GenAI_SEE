@@ -63,7 +63,7 @@ question = st.chat_input("Ask anything")
 if question:
     vectordb = st.session_state.get("vectordb", None)
     if not vectordb:
-        with st.message("assistant"):
+        with st.chat_message("assistant"):
             st.write("You need to provide a PDF")
             st.stop()
 
