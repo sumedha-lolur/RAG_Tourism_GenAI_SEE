@@ -3,11 +3,25 @@ import openai
 from brain import get_index_for_pdf
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Load the API key from the .env file
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Set the title for the Streamlit app
 st.title("RAG enhanced Chatbot")
+
+# Create a toggle button for RAG+OpenAI integration
+rag_openai_integration = st.checkbox('Enable Chatbot to interact and retrieve information from OpenAI')
+
+# If the checkbox is checked, set the flag value
+if rag_openai_integration:
+    flag_value = True
+    print(f"Flag set to {flag_value}")
+else:
+    flag_value = False
+    print(f"Flag set to {flag_value}")
 
 # Cached function to create a vectordb for the provided PDF files
 @st.cache_resource
@@ -56,7 +70,20 @@ for message in prompt:
             st.write(message["content"])
 
 # Get the user's question using Streamlit's chat input
+# Define the recommended prompts
+prompts = ["What are some underrated places to visit in India?", "Give me information about tour packages provided by IRCTC", "What are the best places to visit in India now?"]
+
+# Create buttons for the recommended prompts
+# question = ""
+# for prompt in prompts:
+#     if st.button(prompt):
+#         question = prompt
+
 question = st.chat_input("Ask anything")
+
+# Get the user's question using Streamlit's chat input
+#question = st.text_input("Ask anything", value=question if question else "")
+
 
 # Handle the user's question
 if question:
@@ -96,7 +123,7 @@ if question:
             result = "".join(response).strip()
             botmsg.write(result)
 
-    if result == "Not applicable.":
+    if result == "Not applicable" or result=="Not applicable." and flag_value == True:
         response = []
         result=""
         print(question)
