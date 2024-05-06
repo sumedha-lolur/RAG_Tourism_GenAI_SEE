@@ -73,23 +73,22 @@ for message in prompt:
 # Define the recommended prompts
 prompts = ["What are some underrated places to visit in India?", "Give me information about tour packages provided by IRCTC", "What are the best places to visit in India now?"]
 
-# Create buttons for the recommended prompts
-# question = ""
-# for prompt in prompts:
-#     if st.button(prompt):
-#         question = prompt
+# Create a placeholder for the input at the bottom of the page
+input_placeholder = st.empty()
 
-question = st.chat_input("Ask anything")
+# Create radio buttons for the recommended prompts
+selected = st.session_state.get("current_selection", len(prompts))
+question = input_placeholder.radio("Select a question or type your own", prompts + ["Type my own"], index=selected)
 
-# Get the user's question using Streamlit's chat input
-#question = st.text_input("Ask anything", value=question if question else "")
-
+# If the user wants to type their own question, update the placeholder with chat_input
+if question == "Type my own":
+    question = input_placeholder.chat_input("Ask anything")
 
 # Handle the user's question
 if question:
     vectordb = st.session_state.get("vectordb", None)
     if not vectordb:
-        with st.message("assistant"):
+        with st.chat_message("assistant"):
             st.write("You need to provide a PDF")
             st.stop()
 
@@ -132,7 +131,7 @@ if question:
         model="gpt-4", messages=[
                       {
                         "role": "user",
-                       "content": f"Answer this from what your trained on and not from my pdf question is {question} and append that 'this message is from openAI and not from pdf you provided' ",
+                       "content": f"Answer this from what you're trained on and not from my pdf. Question is {question} and append a message as follows: 'This message is from OpenAI and not from the pdf you provided' ",
                       }
               ], stream=True):
             text = chunk.choices[0].get("delta", {}).get("content")
@@ -144,5 +143,7 @@ if question:
     # Add the assistant's response to the prompt
     prompt.append({"role": "assistant", "content": result})
 
+    st.session_state["current_selection"] = len(prompts)
+    input_placeholder.empty()
     # Store the updated prompt in the session state
     st.session_state["prompt"] = prompt
