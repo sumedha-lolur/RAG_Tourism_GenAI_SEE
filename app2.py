@@ -3,9 +3,6 @@ import openai
 from brain import get_index_for_pdf
 import os
 
-from dotenv import load_dotenv
-load_dotenv()
-
 # Load the API key from the .env file
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
