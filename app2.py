@@ -125,7 +125,7 @@ if question:
         print(question)
         # Send the prompt directly to OpenAI and get the reply
         for chunk in openai.ChatCompletion.create(
-        model="gpt-4", messages=[
+        model="gpt-3.5-turbo", messages=[
                       {
                         "role": "user",
                        "content": f"Answer this from what you're trained on and not from my pdf. Question is {question} and append a message as follows: 'This message is from OpenAI and not from the pdf you provided' ",
